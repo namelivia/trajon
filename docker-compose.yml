@@ -1,0 +1,27 @@
+version: '3'
+services:
+
+  #PHP Service
+  trajon-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: digitalocean.com/php
+    container_name: laravel_trajon_app
+    restart: unless-stopped
+    tty: true
+    environment:
+      APP_KEY: "base64:2Y5k6jHV2sAMqtLkiTvSgTYr4piLebnTFjZuMiIKA0A"
+    working_dir: /var/www
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - trajon-app-network
+
+#Docker Networks
+networks:
+  trajon-app-network:
+    driver: bridge
