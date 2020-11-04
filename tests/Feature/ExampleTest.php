@@ -14,6 +14,7 @@ class ExampleTest extends TestCase
      */
     public function testBasicTest()
     {
+        $this->markTestSkipped('I dont want this');
         $response = $this->get('/');
 
         $response->assertStatus(200);
