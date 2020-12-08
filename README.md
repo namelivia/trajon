@@ -1,11 +1,10 @@
 # Trajon
 
-Just a simple image gallery
+Just an example image gallery using Laravel + S3 + Pomerium for authentication.
 
 ## Usage
 Clone this repository.
 
 Run `docker-compose up --build`.
 
-On your web browser navigate to `http://localhost` and navigate through the app.
-
+More instructions to come...

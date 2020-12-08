@@ -1,0 +1,2 @@
+#!/bin/bash
+base64 -w 0 certs/ec_private.pem

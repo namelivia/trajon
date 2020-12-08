@@ -13,11 +13,26 @@ services:
     environment:
       APP_KEY: "base64:2Y5k6jHV2sAMqtLkiTvSgTYr4piLebnTFjZuMiIKA0A"
     working_dir: /var/www
-    ports:
-      - "80:80"
+    expose:
+      - 80
     volumes:
       - ./:/var/www
       - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - trajon-app-network
+
+  #Pomerium proxy
+  trajon-auth-proxy:
+    image: pomerium/pomerium:latest
+    container_name: laravel_trajon_proxy
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "443:443"
+    volumes:
+      - ./pomerium/config.yaml:/pomerium/config.yaml
+      - ./certs/localhost.crt:/pomerium/cert.pem:ro
+      - ./certs/localhost.key:/pomerium/privkey.pem:ro
     networks:
       - trajon-app-network
 

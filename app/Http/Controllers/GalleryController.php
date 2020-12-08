@@ -6,6 +6,7 @@ use App\Image;
 use App\Http\Controllers\Controller;
 use Storage;
 use Illuminate\Http\Request;
+use Firebase\JWT\JWT;
 
 class GalleryController extends Controller
 {
@@ -16,6 +17,9 @@ class GalleryController extends Controller
      */
     public function all(Request $request)
     {
+        $jwt = $request->header('X-Pomerium-Jwt-Assertion');
+        $key = Storage::disk('local')->get('jwt.pem');
+        $decoded = JWT::decode($jwt, $key, ['ES256']);
         $pagesize = 9;
         $page = (int)$request->input('page') ?? 0;
         $images = array_map(function($item) {
@@ -31,6 +35,6 @@ class GalleryController extends Controller
         $response->offset = $page * $pagesize;
         $response->limit = $pagesize;
         $response->total = count($images);
-        return view('gallery', ['images' => $imagesPage, 'response' => $response]);
+        return view('gallery', ['images' => $imagesPage, 'response' => $response, 'email' => $decoded->email]);
     }
 }

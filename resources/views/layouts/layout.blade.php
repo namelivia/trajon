@@ -8,6 +8,7 @@
     </head>
     <body>
         <main class="container mt-5 mb-6">
+            {{$email}}
 			@yield('content')
         </main>
         <script src="{{ mix('js/app.js') }}"></script>
