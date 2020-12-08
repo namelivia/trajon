@@ -1,0 +1,38 @@
+#!/bin/bash
+
+#ec_private.pem
+openssl ecparam \
+	-genkey \
+	-name prime256v1 \
+	-noout \
+	-out certs/ec_private.pem
+
+#ec_public.pem
+openssl req \
+	-x509 \
+	-new \
+	-key certs/ec_private.pem \
+	-days 1000000 \
+	-out certs/ec_public.pem \
+	-subj "/CN=unused"
+
+# Generate a passphrase
+openssl rand -base64 48 > /tmp/passphrase.txt
+
+# Generate a Private Key
+openssl genrsa -aes128 -passout file:/tmp/passphrase.txt -out certs/localhost.key 2048
+
+# Generate a CSR (Certificate Signing Request)
+openssl req -new -passin file:/tmp/passphrase.txt -key certs/localhost.key -out certs/localhost.csr \
+    -subj "/C=ES/O=namelivia/OU=Domain Control Validated/CN=*.localhost.pomerium.io"
+
+# Remove Passphrase from Key
+cp certs/localhost.key certs/localhost.key.org
+openssl rsa -in certs/localhost.key.org -passin file:/tmp/passphrase.txt -out certs/localhost.key
+
+# Generating a Self-Signed Certificate for 100 years
+openssl x509 -req -days 36500 -in certs/localhost.csr -signkey certs/localhost.key -out certs/localhost.crt
+
+rm certs/localhost.key.org
+rm certs/localhost.csr
+rm /tmp/passphrase.txt
