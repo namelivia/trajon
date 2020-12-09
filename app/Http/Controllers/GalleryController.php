@@ -18,7 +18,7 @@ class GalleryController extends Controller
     public function all(Request $request)
     {
         $jwt = $request->header('X-Pomerium-Jwt-Assertion');
-        $key = Storage::disk('local')->get('jwt.pem');
+        $key = Storage::disk('local')->get('certs/jwt.pem');
         $decoded = JWT::decode($jwt, $key, ['ES256']);
         $pagesize = 9;
         $page = (int)$request->input('page') ?? 0;
